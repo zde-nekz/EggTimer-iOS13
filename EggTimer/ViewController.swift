@@ -18,17 +18,24 @@ class ViewController: UIViewController {
     
     var timer: Timer?
     
+    var totalSeconds = 0
     var secondsRemaining = 0
     
     @IBOutlet weak var message: UILabel!
+    
+    @IBOutlet weak var progressBar: UIProgressView!
     
     @objc func updateCounter() {
         if secondsRemaining > 0 {
             print("\(secondsRemaining) seconds")
             secondsRemaining -= 1
+            let progress = 1 - (Float(secondsRemaining) / Float(totalSeconds))
+            progressBar.progress = progress
+    
         } else {
             timer?.invalidate()
             message.text = "Done"
+            progressBar.progress = 1.0
         }
     }
     
@@ -38,7 +45,10 @@ class ViewController: UIViewController {
         
         let hardness = sender.currentTitle!
         
-        secondsRemaining = eggTimes[hardness]! //* 60
+        totalSeconds = eggTimes[hardness]!
+        secondsRemaining = totalSeconds
+        
+        progressBar.progress = 0.0
         
         timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(updateCounter), userInfo: nil, repeats: true)
         
